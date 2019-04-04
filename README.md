@@ -1,4 +1,4 @@
-# BRI-MENA-investment
+# Belt and Road Initiative (BRI) Investment in Middle East & North Africa
 
 ## Introduction
 This project explores China's Belt Road Initiative (BRI) investments in Middle East &amp; North American countries across time. It's created for my final research paper for MODMEST 100: "Introduction to Modern Middle East" at Harvard College.
