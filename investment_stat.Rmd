@@ -54,10 +54,12 @@ bri_investment %>%
   # plot_ly(x = ~year, y = ~total_investment, color = ~country, type = 'scatter', mode = 'line')
   ggplot(aes(x = year, y = total_investment, color = country)) +
     geom_line() +
-    theme_fivethirtyeight() +
+    theme_minimal() +
     scale_y_continuous(breaks = c(0, 2000, 4000, 6000, 8000),
                        labels = c("$0", "$2bn", "$4bn", "$6bn", "$8bn")) +
-    labs(title = "Aggregate Value of Belt and Road Initiative Investments, in Billion USD",
+    labs(x = NULL,
+         y = NULL,
+         title = "Aggregate Value of Belt and Road Initiative Investments, in Billion USD",
          subtitle = "In Middle Eastern, North African, and West Ansian Countries, 2013 - 2018, by year",
          color = "Country",
          caption = "Source: China Global Investment Tracker/American Enterprise Institute") -> bri_investment_trend
