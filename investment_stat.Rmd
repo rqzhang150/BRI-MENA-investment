@@ -1,0 +1,101 @@
+---
+title: "Belt and Road Initiative Investment Stat in MENA"
+author: "Ruoqi Zhang"
+date: "4/8/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, cache = TRUE, warning = FALSE)
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(plotly)
+library(ggthemes)
+library(scales)
+library(gt)
+```
+
+## Description of Data
+
+American Enterprise Institute's China Global Investment Tracker (CGIT) is the only publicly available dataset recording China's global investment. It contains both BRI and non-BRI investments around the world. It also provides details of those investments, including country, participating companies, size of the investment, and the sector of the investment.
+
+For the purpose of this research project, we are interested in BRI-related investment projects in select countries involved in BRI.
+
+```{r data_processing}
+# We use data from American Enterprise Institute's China Global Investment
+# Tracker as the basis for our analysis. There are multiple sheets in the
+# dataset, and we are interested in the sheet that contains data regarding
+# investment as well as construction projects.
+
+investment <- read_excel("China-Global-Investment-Tracker-2018.xlsx", sheet = "Dataset 1+2", skip = 4)
+
+# AEI's CGIT dataset contains both BRI and non-BRI investments, reflected in its
+# BRI variable. For the purpose of this project, we are only interestedin
+# BRI-related investment. Therefore, we first clean the variable's names using
+# janitor package, and filter BRI-related rows.
+
+bri_investment <- investment %>% 
+  clean_names() %>% 
+  filter(bri == TRUE)
+
+```
+
+## BRI Investments in MENA
+
+According to the dataset, there are `r count(bri_investment)` BRI-related investments internationally since the initiation of this initiative. In Arab Middle East and North America, there are `r bri_investment %>% filter(region == "Arab Middle East and North Africa") %>% count()` investment records with total aggregate value of USD `r bri_investment %>% filter(region == "Arab Middle East and North Africa") %>% summarize(sum(quantity_in_millions))` million.
+
+```{r bri_trend, fig.height = 6, fig.width = 10}
+bri_investment %>% 
+  filter(country %in% c("Turkey", "Iran", "Saudi Arabia", "UAE", "Egypt", "Oman", "Qatar", "Iraq")) %>% 
+  group_by(year, country) %>% 
+  summarize(total_investment = sum(quantity_in_millions)) %>% 
+  arrange(desc(total_investment)) %>% 
+  # plot_ly(x = ~year, y = ~total_investment, color = ~country, type = 'scatter', mode = 'line')
+  ggplot(aes(x = year, y = total_investment, color = country)) +
+    geom_line() +
+    theme_fivethirtyeight() +
+    scale_y_continuous(breaks = c(0, 2000, 4000, 6000, 8000),
+                       labels = c("$0", "$2bn", "$4bn", "$6bn", "$8bn")) +
+    labs(title = "Aggregate Value of Belt and Road Initiative Investments, in Billion USD",
+         subtitle = "In Middle Eastern, North African, and West Ansian Countries, 2013 - 2018, by year",
+         color = "Country",
+         caption = "Source: China Global Investment Tracker/American Enterprise Institute") -> bri_investment_trend
+
+ggsave(filename = "bri_investment_trend.png", 
+       plot = bri_investment_trend,
+       width = 10,
+       height = 6,
+       dpi = 300)
+
+bri_investment_trend
+```
+
+```{r bri_investment_quantity}
+bri_investment %>% 
+  filter(region == "Arab Middle East and North Africa" | country %in% c("Turkey", "Iran", "Syria")) %>%
+  group_by(country, year) %>% 
+  summarize(total_investment = sum(quantity_in_millions)) %>% 
+  spread(key = year, value = total_investment) %>% 
+  ungroup() %>% 
+  mutate_all(list(~replace_na(.,0))) %>%
+  mutate(total_investment = `2013` + `2014` + `2015` + `2016` + `2017` + `2018`) %>% 
+  arrange(desc(total_investment)) %>% 
+  gt() %>% 
+  tab_header(
+    title = 'Belt and Road Initiative Investments in Middle East',
+    subtitle = "Aggregate investment in million dollars, 2013-2018"
+  ) %>% 
+  gt(rowname_col = "country") %>% 
+  tab_stubhead_label(label = "Country") %>% 
+  cols_label(total_investment = "Total Investment") %>% 
+  tab_source_note(source_note = "Source: China Global Investment Tracker/American Enterprise Institute") %>% 
+  fmt_currency(
+    columns = vars(`2013`, `2014`, `2015`, `2016`, `2017`, `2018`, total_investment),
+    currency = "USD",
+    decimals = 0,
+    pattern = "{x} M") -> bri_investment_quantity
+
+bri_investment_quantity
+```
+
