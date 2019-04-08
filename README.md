@@ -1,6 +1,7 @@
 # Belt and Road Initiative (BRI) Investment in Middle East & North Africa
 
 ![China's Belt and Road Initiative Map, Creative Commons Attribution-Share Alike 4.0, Made by User:Lommes on Wikipedia ](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/One-belt-one-road.svg/2000px-One-belt-one-road.svg.png)
+China's Belt and Road Initiative Map, Creative Commons Attribution-Share Alike 4.0, Made by User:Lommes on Wikipedia
 
 In the inaugural year of Chinese President Xi Jinping’s presidency, he announced Belt and Road Initiative (BRI), China’s ambitious $1 trillion infrastructure and investment project that aims seek to strengthen the connections between Chinese and other Eurasian economies [(Broder)](http://library.cqpress.com/cqresearcher/cqresrre2019012500). While BRI embodies China’s increased economic engagement with the global economy. Xi’s presidency was otherwise characterized as politically repressive, including crackdowns on human rights lawyers, labor rights activists, and various civil society organizations [(Human Rights Watch)](https://www.hrw.org/news/2019/01/17/china-xi-doubles-down-repression). 
 
@@ -22,6 +23,7 @@ The dataset is available for download from CGIT website. It is also included in 
 The following are a selections of the visualization and analysis into the CGIT dataset. See `investment_stat.Rmd` for the source code that generated the graphics.
 
 ![*Fig.1. Aggregate value of BRI investment and construction projects in selected MENA countries in billion USD. While the aggregate investment in Turkey remains lower than Iran and Saudi Arabia, the volume of investment has not shown drastic fluctuation across the years.*](bri_investment_trend.png)
+*Fig.1. Aggregate value of BRI investment and construction projects in selected MENA countries in billion USD. While the aggregate investment in Turkey remains lower than Iran and Saudi Arabia, the volume of investment has not shown drastic fluctuation across the years.*
 
 ## Acknowledgements
 
