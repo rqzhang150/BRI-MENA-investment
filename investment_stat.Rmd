@@ -60,7 +60,7 @@ bri_investment %>%
     labs(x = NULL,
          y = NULL,
          title = "Aggregate Value of Belt and Road Initiative Investments, in Billion USD",
-         subtitle = "In Middle Eastern, North African, and West Ansian Countries, 2013 - 2018, by year",
+         subtitle = "In Middle Eastern, North African, and West Asian Countries, 2013 - 2018, by year",
          color = "Country",
          caption = "Source: China Global Investment Tracker/American Enterprise Institute") -> bri_investment_trend
 
