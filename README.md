@@ -22,8 +22,10 @@ The dataset is available for download from CGIT website. It is also included in 
 
 The following are a selections of the visualization and analysis into the CGIT dataset. See `investment_stat.Rmd` for the source code that generated the graphics.
 
-![*Fig.1. Aggregate value of BRI investment and construction projects in selected MENA countries in billion USD. While the aggregate investment in Turkey remains lower than Iran and Saudi Arabia, the volume of investment has not shown drastic fluctuation across the years.*](bri_investment_trend.png)
+![*Fig.1. Aggregate value of BRI investment and construction projects in selected MENA countries in billion USD. While the aggregate investment in Turkey remains lower than Iran and Saudi Arabia, the volume of investment has not shown drastic fluctuation across the years.*](bri_investment_trend_select_countries.png)
 *Fig.1. Aggregate value of BRI investment and construction projects in selected MENA countries in billion USD. While the aggregate investment in Turkey remains lower than Iran and Saudi Arabia, the volume of investment has not shown drastic fluctuation across the years.*
+
+![*Fig.2. Fig 3. Aggregate value of BRI investments and construction projects in Turkey across sectors. While total volume fluctuates, investments in energy persists through time.*](turkey_by_sector.png)
 
 ## Acknowledgements
 

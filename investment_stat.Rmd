@@ -45,33 +45,9 @@ bri_investment <- investment %>%
 
 According to the dataset, there are `r count(bri_investment)` BRI-related investments internationally since the initiation of this initiative. In Arab Middle East and North America, there are `r bri_investment %>% filter(region == "Arab Middle East and North Africa") %>% count()` investment records with total aggregate value of USD `r bri_investment %>% filter(region == "Arab Middle East and North Africa") %>% summarize(sum(quantity_in_millions))` million.
 
-```{r bri_trend, fig.height = 6, fig.width = 10}
-bri_investment %>% 
-  filter(country %in% c("Turkey", "Iran", "Saudi Arabia", "UAE", "Egypt", "Oman", "Qatar", "Iraq")) %>% 
-  group_by(year, country) %>% 
-  summarize(total_investment = sum(quantity_in_millions)) %>% 
-  arrange(desc(total_investment)) %>% 
-  # plot_ly(x = ~year, y = ~total_investment, color = ~country, type = 'scatter', mode = 'line')
-  ggplot(aes(x = year, y = total_investment, color = country)) +
-    geom_line() +
-    theme_minimal() +
-    scale_y_continuous(breaks = c(0, 2000, 4000, 6000, 8000),
-                       labels = c("$0", "$2bn", "$4bn", "$6bn", "$8bn")) +
-    labs(x = NULL,
-         y = NULL,
-         title = "Aggregate Value of Belt and Road Initiative Investments, in Billion USD",
-         subtitle = "In Middle Eastern, North African, and West Asian Countries, 2013 - 2018, by year",
-         color = "Country",
-         caption = "Source: China Global Investment Tracker/American Enterprise Institute") -> bri_investment_trend
+## Total Investment Table
 
-ggsave(filename = "bri_investment_trend.png", 
-       plot = bri_investment_trend,
-       width = 10,
-       height = 6,
-       dpi = 300)
-
-bri_investment_trend
-```
+To get a better sense of the countries we are exploring, we use gt to list the volumn of BRI investments and construction projects since 2013.
 
 ```{r bri_investment_quantity}
 bri_investment %>% 
@@ -99,5 +75,111 @@ bri_investment %>%
     pattern = "{x} M") -> bri_investment_quantity
 
 bri_investment_quantity
+```
+
+## Trend of BRI
+
+```{r bri_trend, fig.height = 6, fig.width = 10}
+bri_investment %>% 
+  filter(country %in% c("Turkey", "Iran", "Saudi Arabia", "UAE", "Egypt", "Oman", "Qatar", "Iraq")) %>% 
+  group_by(year, country) %>% 
+  summarize(total_investment = sum(quantity_in_millions)) %>% 
+  arrange(desc(total_investment)) %>% 
+  # plot_ly(x = ~year, y = ~total_investment, color = ~country, type = 'scatter', mode = 'line')
+  ggplot(aes(x = year, y = total_investment, color = country)) +
+    geom_line() +
+    geom_point(size = 2) +
+    theme_minimal() +
+    theme(plot.title = element_text(family = "Georgia",
+                                    size = 20),
+          plot.subtitle = element_text(size = 15)) +
+    scale_y_continuous(breaks = c(0, 2000, 4000, 6000, 8000),
+                       labels = c("$0", "$2bn", "$4bn", "$6bn", "$8bn")) +
+    labs(x = NULL,
+         y = NULL,
+         title = "Aggregate Value of Belt and Road Initiative Investments, in Billion USD",
+         subtitle = "In Middle Eastern, North African, and West Asian Countries, 2013 - 2018, by year",
+         color = "Country",
+         caption = "Source: China Global Investment Tracker/American Enterprise Institute") -> bri_investment_trend
+
+ggsave(filename = "bri_investment_trend.png", 
+       plot = bri_investment_trend,
+       width = 10,
+       height = 6,
+       dpi = 300)
+
+bri_investment_trend
+```
+
+We are also interested in some particular countries' investment volume through the Belt and Road Initiative, we plot out their trends here:
+
+```{r bri_trend_select_countries, fig.height = 6, fig.width = 10}
+bri_investment_trend_select_countries <- bri_investment %>% 
+  filter(country %in% c("Turkey", "Saudi Arabia", "Iran")) %>% 
+  group_by(year, country) %>% 
+  summarize(total_investment = sum(quantity_in_millions)) %>% 
+  arrange(desc(total_investment)) %>% 
+  ggplot(aes(x = year, y = total_investment, color = country)) +
+    geom_line() +
+    geom_point(size = 2) +
+    theme_minimal() +
+    theme(plot.title = element_text(family = "Georgia",
+                                    size = 20),
+          plot.subtitle = element_text(size = 15)) +
+    scale_y_continuous(breaks = c(0, 1000, 2000, 3000, 4000, 5000),
+                        labels = c("$0", "$1bn", "$2bn", "$3bn", "$4bn", "$5bn")) +
+    labs(x = NULL,
+         y = NULL,
+         title = "Aggregate Value of Belt and Road Initiative Investments, in Billion USD",
+         subtitle = "In Iran, Saudi Arabia, and Turkey, 2013 - 2018, by year",
+         color = "Country",
+         caption = "Source: China Global Investment Tracker/American Enterprise Institute")
+
+ggsave(filename = "bri_investment_trend_select_countries.png", 
+       plot = bri_investment_trend_select_countries,
+       width = 10,
+       height = 6,
+       dpi = 300)
+
+bri_investment_trend_select_countries
+
+```
+
+## Case Study: Turkey
+
+Turkey is an interesting case, because it's the only country that openly condemned China's religious policies in XUAR. But does it necessarily impact BRI relations between both countries? Note that there is a massive protest against Chinese investments in 2015.
+
+```{r turkey_case_study, fig.height = 6, fig.width = 10}
+turkey_by_sector <- bri_investment %>% 
+  filter(country %in% c("Turkey"),
+         bri == TRUE) %>% 
+  mutate(sector = factor(sector, 
+                         levels = rev(c("Energy", "Transport", "Real estate", "Finance", "Technology")),
+                         labels = rev(c("Energy", "Transport", "Real estate", "Finance", "Technology")))) %>% 
+  group_by(year, sector) %>% 
+  summarize(total_quantity_in_millions = sum(quantity_in_millions)) %>% 
+  ggplot(aes(x = year, y = total_quantity_in_millions, fill = sector)) + 
+     geom_col() +
+     theme_minimal() +
+     theme(plot.title = element_text(family = "Georgia",
+                                     size = 20),
+           plot.subtitle = element_text(size = 15)) +
+     scale_y_continuous(breaks = c(0, 500, 1000, 1500, 2000),
+                        labels = c("$0", "$0.5bn", "$1bn", "$1.5bn", "$2bn")) +
+     labs(x = NULL,
+          y = NULL,
+          title = "Aggregate Volume of BRI-related Investments",
+          subtitle = "In Turkey, 2013 - 2018, by Sector",
+          fill = "Sector",
+          caption = "Source: China Global Investment Tracker/American Enterprise Institute")
+
+ggsave(filename = "turkey_by_sector.png", 
+       plot = turkey_by_sector,
+       width = 10,
+       height = 6,
+       dpi = 300)
+
+turkey_by_sector
+
 ```
 
